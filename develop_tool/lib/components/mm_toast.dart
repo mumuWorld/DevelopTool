@@ -17,7 +17,7 @@ class MMToaster {
     dismissTip();
     // 创建 entry
     OverlayEntry entry = OverlayEntry(builder: (context) {
-      return MMToastView(text: text, position: position, duration: duration, dismiss: () {
+      return MMToastView(text: text, position: position, duration: duration, context: context, dismiss: () {
         MMToaster.dismissTip();
       });
     });
@@ -37,8 +37,9 @@ class MMToastView extends StatefulWidget {
   final ToastPosition position;
   final Duration duration;
   final VoidCallback dismiss;
-
-  const MMToastView({Key? key, required this.text, required this.position, required this.duration, required this.dismiss}) : super(key: key);
+  final BuildContext context;
+  const MMToastView({Key? key, required this.text, required this.position,
+    required this.duration, required this.context, required this.dismiss}) : super(key: key);
 
   @override
   State<MMToastView> createState() => _MMToastViewState();
@@ -70,12 +71,12 @@ class _MMToastViewState extends State<MMToastView> with SingleTickerProviderStat
     });
     if (widget.position == ToastPosition.top) {
       toastAlignment = MainAxisAlignment.start;
-      topOffset = MediaQuery.of(context).viewInsets.top + 50;
+      topOffset = MediaQuery.of(widget.context).viewInsets.top + 50;
     } else if (widget.position == ToastPosition.center) {
       toastAlignment = MainAxisAlignment.center;
     } else {
       toastAlignment = MainAxisAlignment.end;
-      bottomOffset = MediaQuery.of(context).viewInsets.bottom + 50;
+      bottomOffset = MediaQuery.of(widget.context).viewInsets.bottom + 50;
     }
   }
 
