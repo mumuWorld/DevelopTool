@@ -1,5 +1,6 @@
 import 'package:develop_tool/Base/mm_base_state.dart';
 import 'package:develop_tool/components/mm_toast.dart';
+import 'package:develop_tool/components/theme_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -29,12 +30,17 @@ class _MMStrToolPageState extends MMBaseState<MMStrToolPage> {
           child: Container(
             margin: const EdgeInsets.all(10),
             child: TextField(
+              cursorColor: MMThemeColors.shared.main_color,
               decoration: InputDecoration(
                 hintText: "请输入内容",
-                border: OutlineInputBorder(
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: MMThemeColors.shared.grey_color),
                   borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.red, width: 10.0),
-                )
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               controller: _inputTextController,
               maxLines: double.maxFinite.toInt(),
@@ -46,6 +52,7 @@ class _MMStrToolPageState extends MMBaseState<MMStrToolPage> {
         Expanded(child: Container(
           margin: const EdgeInsets.all(10),
           child: TextField(
+            cursorColor: MMThemeColors.shared.main_color,
             controller: _resultTextController,
             decoration: InputDecoration(
                 border: OutlineInputBorder(
