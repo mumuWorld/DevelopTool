@@ -75,6 +75,12 @@ class _MMStrToolPageState extends MMBaseState<MMStrToolPage> {
             handlerEncode();
           }, child: const Text("URL Encode")),
         ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          child: ElevatedButton(onPressed: (){
+            handlerQueryEncode();
+          }, child: const Text("URL Encode Query")),
+        ),
         ElevatedButton(onPressed: (){
           handlerDecode();
         }, child: const Text("URL Decode")),
@@ -83,7 +89,6 @@ class _MMStrToolPageState extends MMBaseState<MMStrToolPage> {
           child: ElevatedButton(onPressed: (){
             Clipboard.setData(ClipboardData(text: _resultTextController.text));
             MMToaster.showToast(context, "已复制到剪切板");
-            // Fluttertoast.showToast(msg: "已复制到剪切板");
           }, child: const Text("复制结果")),
         ),
         Container(
@@ -100,6 +105,12 @@ class _MMStrToolPageState extends MMBaseState<MMStrToolPage> {
   void handlerEncode() {
     var text = _inputTextController.text;
     var resultText = Uri.encodeComponent(text);
+    _resultTextController.text = resultText;
+  }
+
+  void handlerQueryEncode() {
+    var text = _inputTextController.text;
+    var resultText = Uri.encodeFull(text);
     _resultTextController.text = resultText;
   }
 
