@@ -1,0 +1,142 @@
+import 'package:develop_tool/Base/mm_base_state.dart';
+import 'package:flutter/material.dart';
+
+
+class MMDateTool extends StatefulWidget {
+  const MMDateTool({super.key});
+
+  @override
+  State<MMDateTool> createState() => _MMDateToolState();
+}
+
+class _MMDateToolState extends MMBaseState<MMDateTool> {
+
+  final TextEditingController _controller = TextEditingController();
+
+  final TextEditingController _timeController = TextEditingController();
+
+  @override
+  String get barTitle {
+    return "date操作";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTimestamp();
+    _convertTimestamp();
+  }
+
+  Widget getTimeStampWidget(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              const Text("当前时间戳 (秒):", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),),
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: "",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),],
+          ),
+          const SizedBox(height: 16),
+          Row(children: [
+            ElevatedButton(
+              onPressed: _updateTimestamp,
+              child: const Text("更新时间戳"),
+            ),
+            const SizedBox(width: 8,),
+            ElevatedButton(
+              onPressed: _convertTimestamp,
+              child: const Text("转换为日期"),
+            ),
+            const SizedBox(width: 8,),
+            ElevatedButton(
+              onPressed: _add60Seconds,
+              child: const Text("加 1 分钟"),
+            ),
+          ],),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              const Text("当前时间戳 (秒):", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),),
+              Expanded(
+                child: TextField(
+                  controller: _timeController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: "",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget getBody(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        getTimeStampWidget(context)
+      ],
+    );
+  }
+}
+
+extension _MMDateToolStateExtension on _MMDateToolState {
+
+  // 点击按钮时的逻辑
+  void _add60Seconds() {
+    // 获取当前的时间戳
+    int currentTimestamp = int.tryParse(_controller.text) ?? 0;
+    // 增加 60 秒（1 分钟）
+    currentTimestamp += 60;
+    // 更新 TextField 的内容
+    setState(() {
+      _controller.text = currentTimestamp.toString();
+    });
+  }
+
+  void _updateTimestamp() {
+    final int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000; // 转换为秒
+    _controller.text = timestamp.toString();
+  }
+
+  /// 将时间戳转换为日期字符串（不使用 `intl`）
+  void _convertTimestamp() {
+    int? timestamp = int.tryParse(_controller.text);
+    if (timestamp != null) {
+      DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+      String formattedDate = _formatDateTime(date);
+      _timeController.text = formattedDate;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("请输入有效的时间戳")),
+      );
+    }
+  }
+
+  /// 自定义格式化日期方法
+  String _formatDateTime(DateTime date) {
+    return "${date.year}-${_twoDigits(date.month)}-${_twoDigits(date.day)} "
+        "${_twoDigits(date.hour)}:${_twoDigits(date.minute)}:${_twoDigits(date.second)}";
+  }
+
+  /// 保证个位数前补 `0`
+  String _twoDigits(int n) {
+    return n.toString().padLeft(2, '0');
+  }
+}

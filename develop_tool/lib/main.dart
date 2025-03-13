@@ -1,4 +1,5 @@
 import 'package:develop_tool/Base/mm_base_state.dart';
+import 'package:develop_tool/DateTool/date_tool.dart';
 import 'package:develop_tool/StrTool/url_tool.dart';
 import 'package:develop_tool/main_label_cell.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +86,8 @@ class _MyHomePageState extends MMBaseState<MyHomePage> {
 class MMMainSliverDelegate {
 
   late var dataList = [
-    "String 操作"
+    "String 操作",
+    "时间/时间戳 操作"
   ];
   //正常情况不会变，除非使用 GlobalKey这种。
   BuildContext context;
@@ -97,6 +99,10 @@ class MMMainSliverDelegate {
     if (index == 0) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return const MMStrToolPage();
+      }));
+    } else if (index == 1) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return const MMDateTool();
       }));
     }
   }

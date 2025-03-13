@@ -1,4 +1,5 @@
 
+import 'package:develop_tool/Base/mm_tool.dart';
 import 'package:flutter/material.dart';
 
 class MMMainLabelCell extends StatelessWidget {
@@ -12,10 +13,16 @@ class MMMainLabelCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return ElevatedButton(
-        onPressed: callback,
-      child: Text(
-        title ?? "",
+    return Container(
+      margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+      child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(MMTool.getRandomColor()) 
+          ),
+          onPressed: callback,
+        child: Text(
+          title ?? "",
+        ),
       ),
     );
   }
