@@ -61,9 +61,18 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
             ),
             const SizedBox(width: 8,),
             ElevatedButton(
-              onPressed: _add60Seconds,
+              onPressed: () {
+                _addMinutes(1);
+              },
               child: const Text("加 1 分钟"),
             ),
+            const SizedBox(width: 8,),
+            ElevatedButton(
+              onPressed:  () {
+                _addMinutes(10);
+              },
+              child: const Text("加 10 分钟"),
+            )
           ],),
           const SizedBox(height: 16),
           Row(
@@ -99,11 +108,11 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
 extension _MMDateToolStateExtension on _MMDateToolState {
 
   // 点击按钮时的逻辑
-  void _add60Seconds() {
+  void _addMinutes(int minute) {
     // 获取当前的时间戳
     int currentTimestamp = int.tryParse(_controller.text) ?? 0;
     // 增加 60 秒（1 分钟）
-    currentTimestamp += 60;
+    currentTimestamp += 60 * minute;
     // 更新 TextField 的内容
     setState(() {
       _controller.text = currentTimestamp.toString();
