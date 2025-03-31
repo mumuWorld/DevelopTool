@@ -1,5 +1,7 @@
 import 'package:develop_tool/Base/mm_base_state.dart';
+import 'package:develop_tool/components/mm_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class MMDateTool extends StatefulWidget {
@@ -14,6 +16,8 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
   final TextEditingController _controller = TextEditingController();
 
   final TextEditingController _timeController = TextEditingController();
+
+  bool needMillisecond = false;
 
   @override
   String get barTitle {
@@ -36,7 +40,11 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              const Text("当前时间戳 (秒):", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),),
+              Text("当前时间戳 (${needMillisecond ? "毫秒" : "秒"}):", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),),
+              ElevatedButton(
+                onPressed: _copyInput,
+                child: const Text("复制"),
+              ),
               Expanded(
                 child: TextField(
                   controller: _controller,
@@ -46,7 +54,8 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-              ),],
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           Row(children: [
@@ -77,7 +86,7 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
           const SizedBox(height: 16),
           Row(
             children: [
-              const Text("当前时间戳 (秒):", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),),
+              Text("当前时间戳 (${needMillisecond ? "毫秒" : "秒"}):", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),),
               Expanded(
                 child: TextField(
                   controller: _timeController,
@@ -89,7 +98,24 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
                 ),
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 16,),
+          Row(children: [
+            const Text("展示毫秒:", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),),
+            Switch(
+              value: needMillisecond,
+              onChanged: (value) {
+                setState(() {
+                  needMillisecond = value;
+                  _updateTimestamp();
+                  _convertTimestamp();
+                });
+              },
+              activeColor: Colors.green,  // 选中时的颜色
+              inactiveThumbColor: Colors.grey,  // 关闭时的滑块颜色
+              inactiveTrackColor: Colors.grey[300], // 关闭时的轨道颜色
+            ),
+          ],)
         ],
       ),
     );
@@ -107,12 +133,21 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
 
 extension _MMDateToolStateExtension on _MMDateToolState {
 
+  void _copyInput() {
+    Clipboard.setData(ClipboardData(text: _controller.text));
+    MMToaster.showToast(context, "已复制到剪切板");
+  }
+
   // 点击按钮时的逻辑
   void _addMinutes(int minute) {
     // 获取当前的时间戳
     int currentTimestamp = int.tryParse(_controller.text) ?? 0;
     // 增加 60 秒（1 分钟）
-    currentTimestamp += 60 * minute;
+    int result =  60 * minute;
+    if (needMillisecond) {
+      result *= 1000;
+    }
+    currentTimestamp += result;
     // 更新 TextField 的内容
     setState(() {
       _controller.text = currentTimestamp.toString();
@@ -120,7 +155,10 @@ extension _MMDateToolStateExtension on _MMDateToolState {
   }
 
   void _updateTimestamp() {
-    final int timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000; // 转换为秒
+    int timestamp = DateTime.now().millisecondsSinceEpoch ;
+    if(needMillisecond == false) {
+      timestamp = timestamp ~/ 1000; // 转换为秒
+    }
     _controller.text = timestamp.toString();
   }
 
@@ -128,7 +166,10 @@ extension _MMDateToolStateExtension on _MMDateToolState {
   void _convertTimestamp() {
     int? timestamp = int.tryParse(_controller.text);
     if (timestamp != null) {
-      DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+      if(needMillisecond == false) {
+        timestamp = timestamp * 1000;
+      }
+      DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp);
       String formattedDate = _formatDateTime(date);
       _timeController.text = formattedDate;
     } else {
