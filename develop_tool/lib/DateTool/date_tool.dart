@@ -2,6 +2,7 @@ import 'package:develop_tool/Base/mm_base_state.dart';
 import 'package:develop_tool/components/mm_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class MMDateTool extends StatefulWidget {
@@ -29,6 +30,19 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
     super.initState();
     _updateTimestamp();
     _convertTimestamp();
+    _loadLastSetting();
+  }
+
+  Future<void> _loadLastSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      needMillisecond = prefs.getBool("kDateTool_NeedMillisecond") ?? false;
+    });
+  }
+
+  Future<void> _saveUserSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("kDateTool_NeedMillisecond", needMillisecond);
   }
 
   Widget getTimeStampWidget(BuildContext context) {
@@ -109,6 +123,7 @@ class _MMDateToolState extends MMBaseState<MMDateTool> {
                   needMillisecond = value;
                   _updateTimestamp();
                   _convertTimestamp();
+                  _saveUserSetting();
                 });
               },
               activeColor: Colors.green,  // 选中时的颜色
