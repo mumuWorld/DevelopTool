@@ -1,5 +1,6 @@
 import 'package:develop_tool/Base/mm_base_state.dart';
 import 'package:develop_tool/DateTool/date_tool.dart';
+import 'package:develop_tool/JSONTool/param_compare.dart';
 import 'package:develop_tool/StrTool/url_tool.dart';
 import 'package:develop_tool/main_label_cell.dart';
 import 'package:develop_tool/other/MengHuan.dart';
@@ -89,6 +90,7 @@ class MMMainSliverDelegate {
   late var dataList = [
     "String 操作",
     "时间/时间戳 操作",
+    "url 参数对比",
     "MH 工具"
   ];
   //正常情况不会变，除非使用 GlobalKey这种。
@@ -107,6 +109,10 @@ class MMMainSliverDelegate {
         return const MMDateTool();
       }));
     } else if (index == 2) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return const MMParamCompareTool();
+      }));
+    } else if (index == 3) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
         return const MMMengHuanTool();
       }));

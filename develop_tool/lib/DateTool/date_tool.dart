@@ -188,9 +188,7 @@ extension _MMDateToolStateExtension on _MMDateToolState {
       String formattedDate = _formatDateTime(date);
       _timeController.text = formattedDate;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("请输入有效的时间戳")),
-      );
+      MMToaster.showToast(context, "请输入有效的时间戳");
     }
   }
 
