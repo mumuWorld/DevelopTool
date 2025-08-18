@@ -3,7 +3,7 @@ import 'package:develop_tool/DateTool/date_tool.dart';
 import 'package:develop_tool/JSONTool/param_compare.dart';
 import 'package:develop_tool/StrTool/url_tool.dart';
 import 'package:develop_tool/main_label_cell.dart';
-import 'package:develop_tool/other/MengHuan.dart';
+import 'package:develop_tool/other/mh_tools_list.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -114,7 +114,7 @@ class MMMainSliverDelegate {
       }));
     } else if (index == 3) {
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const MMMengHuanTool();
+        return const MHToolsList();
       }));
     }
   }

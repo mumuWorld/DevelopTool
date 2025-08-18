@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(flutter build:*)",
+      "Bash(flutter run:*)",
+      "Bash(webdev serve:*)",
+      "Bash(dart pub global activate:*)",
+      "Bash(export PATH=\"$PATH\":\"$HOME/.pub-cache/bin\")"
+    ],
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "/Applications/Google Chrome.app/Contents"
+    ]
+  }
+}

@@ -128,6 +128,13 @@ class _MMParamCompareToolState extends MMBaseState<MMParamCompareTool> {
       } catch (_) {}
     } else if (raw.startsWith("http")) { // 如果是以 http 开头就不用拼接了
       parseStr = raw;
+    } else if (raw.startsWith('curl')) {
+      Map<String, dynamic> result = parseCurlPostForm(raw);
+      Map<String, String>? params = result["params"];
+      parseStr = result["url"];
+      if (params != null) {
+        return params;
+      }
     } else {
       parseStr = "http://dummy.com?$raw";
     }
@@ -135,7 +142,24 @@ class _MMParamCompareToolState extends MMBaseState<MMParamCompareTool> {
     return uri.queryParameters;
   }
 
-  bool onlyCompareKey = false;
+  Map<String, dynamic> parseCurlPostForm(String curl) {
+    // 如果没有加 r：
+    final urlRegex = RegExp("curl ['\\\"]([^'\\\"]+)['\\\"]");
+    final dataRegex = RegExp("--data(?:-raw)? ['\\\"](.+?)['\\\"]");
+
+    final urlMatch = urlRegex.firstMatch(curl);
+    final dataMatch = dataRegex.firstMatch(curl);
+
+    final url = urlMatch?.group(1);
+    final body = dataMatch?.group(1);
+
+    final paramMap = body != null ? Uri.splitQueryString(body) : null;
+
+    return {
+      'url': url,
+      'params': paramMap,
+    };
+  }
 
   @override
   Widget getBody(BuildContext context) {
@@ -223,10 +247,10 @@ class _MMParamCompareToolState extends MMBaseState<MMParamCompareTool> {
         children: [
           Text('只对比 Key'),
           Switch(
-            value: onlyCompareKey,
+            value: _compareValue,
             onChanged: (val) {
               setState(() {
-                onlyCompareKey = val;
+                _compareValue = val;
               });
             },
           ),
@@ -251,11 +275,11 @@ class _MMParamCompareToolState extends MMBaseState<MMParamCompareTool> {
 
   double _leftRatio = 0.4;
   double _rightRatio = 0.4;
-
+  final double _horRatioWidgetWidth = 10;
   Widget _buildHeaderWithResizableDividers() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final totalWidth = constraints.maxWidth;
+        final totalWidth = (constraints.maxWidth - _horRatioWidgetWidth * 2 - 2) * 0.5;
         final keyAWidth = totalWidth * _leftRatio;
         final valueAWidth = totalWidth * (1 - _leftRatio);
         final keyBWidth = totalWidth * _rightRatio;
@@ -283,6 +307,11 @@ class _MMParamCompareToolState extends MMBaseState<MMParamCompareTool> {
                   ),
                 ],
               ),
+            ),
+            Container(
+              width: 2,
+              height: 20,
+              color: Colors.redAccent,
             ),
             Expanded(
               flex: 1,
@@ -375,11 +404,14 @@ class _MMParamCompareToolState extends MMBaseState<MMParamCompareTool> {
       behavior: HitTestBehavior.translucent,
       onHorizontalDragUpdate: (details) => onDrag(details.delta.dx),
       child: Container(
-        width: 8,
+        width: _horRatioWidgetWidth,
         height:20,
-        color: Colors.grey.withOpacity(0.3),
+        color: Colors.grey.withOpacity(0.5),
         child: Center(
-          child: Container(width: 2, color: Colors.grey),
+          child: Transform.rotate(
+            angle: 1.5708, // 90度 = π/2 ≈ 1.5708 弧度
+            child: Icon(Icons.drag_handle, size: _horRatioWidgetWidth),
+          ),
         ),
       ),
     );

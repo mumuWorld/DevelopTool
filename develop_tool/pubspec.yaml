@@ -37,6 +37,16 @@ dependencies:
   # 二维码
   qr_flutter: ^4.0.0
   shared_preferences: ^2.1.0
+  # 二维码解码
+  zxing2: ^0.2.2
+  # 图片处理
+  image: ^4.0.17
+  # 文件选择
+  file_picker: ^8.0.0
+  # 拖拽支持
+  desktop_drop: ^0.4.4
+  # 相机支持
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -47,7 +57,11 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
+  
+  # WebDev dependencies
+  build_runner: ^2.4.0
+  build_web_compilers: ^4.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
